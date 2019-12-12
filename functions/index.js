@@ -5,7 +5,7 @@ const cors = require('cors')({origin: true});
 
 const firestore = admin.firestore();
 
-// getting users information
+// getting users information (if needed!)
 exports.listUsers = functions.https.onRequest(async (req, res) => {
 
   // eslint-disable-next-line no-empty-function
@@ -43,6 +43,7 @@ exports.onUserStatusChanged = functions.database
     return event.data.ref.once('value')
     .then(statusSnapshot => snapShot.val()) // Get the latest value from the Firebase Realtime database
     .then(status => {
+      console.log(status)
       // check if the value is 'offline'
       if (status === 'offline') {
         // Set the Firestore's document's online value to false

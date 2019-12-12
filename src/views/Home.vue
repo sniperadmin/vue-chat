@@ -51,7 +51,7 @@
             <!-- chat window -->  
             <v-flex xs3 color="grey">
               <v-card tile flat color="blue-grey darken-2" :loading="loading">
-                users online ({{ users.length }})
+                All users ({{ users.length }})
               </v-card>
             </v-flex>
             <v-flex xs9>
@@ -72,19 +72,19 @@
 
                 <v-list-item dark v-for="user in users" :key="user.uid">
                   <v-list-item-avatar>
-                    <v-img :src="user.photoURL" />
+                    <v-img :src="user.photo" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title>
-                      {{ user.displayName }}
+                      {{ user.name }}
                     </v-list-item-title>
                     <v-list-item-subtitle>
                       {{ user.email }}
                     </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-icon>
-                    <v-icon v-if="isActive" color="green">mdi-account-circle</v-icon>
-                    <v-icon v-else-if="!isActive" color="red">mdi-account</v-icon>
+                    <v-icon v-if="user.liveStatus === 'online'" color="green">mdi-account-circle</v-icon>
+                    <v-icon v-else color="red">mdi-account</v-icon>
                   </v-list-item-icon>
                 </v-list-item>
 
@@ -120,10 +120,14 @@
                         <v-chip pill>
                           <v-avatar
                             left
-                            :color="isActive ? 'green' : 'grey'" v-if="message.email !== authUser.email"
-                          >P</v-avatar>
+                            :color="authUser.liveStatus === 'online' ? 'green' : 'grey'" v-if="message.email !== authUser.email"
+                          >
+                          {{ message.author.slice(0, 1) }}
+                          </v-avatar>
                           {{ message.message }}
-                          <v-avatar right :color="isActive ? 'green' : 'grey'" v-if="message.email === authUser.email">M</v-avatar>
+                          <v-avatar right :color="authUser.liveStatus === 'offline' ? 'green' : 'grey'" v-if="message.email === authUser.email">
+                            {{ message.author.slice(0, 1) }}
+                          </v-avatar>
                         </v-chip>
                       </v-list-item-title>
                       <v-list-item-subtitle>{{ message.author }}</v-list-item-subtitle>
@@ -146,7 +150,11 @@
   import { firebase, db } from '../fb'
   import VuetifyLogo from '@/components/VuetifyLogo'
   import Emoticons from '@/components/Emotions'
-  import axios from 'axios'
+  const firestoreDb = firebase.firestore();
+  const oldRealTimeDb = firebase.database();
+
+  const usersRef = firestoreDb.collection('profiles'); // Get a firestore reference to the Users collection;
+  const onlineRef = oldRealTimeDb.ref('.info/connected'); // Get a database reference to the list of connections
 
   // import moment from 'moment'
 
@@ -162,15 +170,20 @@
       currentUser: [],
       message: '',
       users: [],
-      isActive: false,
+      isActive: '',
       authUser:{},
       profileImg:'https://lh5.googleusercontent.com/-U1TFOGH-4DQ/AAAAAAAAAAI/AAAAAAAAAuE/tS4M30mPvU8/photo.jpg',
       loading: false
     }),
     methods: {
       logout() {
+        let user = firebase.auth().currentUser
         firebase.auth().signOut().then(() => {
           // Sign-out successful.
+
+          usersRef.doc(user.uid).update({
+              liveStatus: 'offline'
+            })
         }).catch(() => {
           // An error happened.
         })
@@ -202,75 +215,36 @@
           // inject cashed messages into props
           this.messages = allMsgs
         })
+      },
+      fetchUsers () {
+         db.collection('profiles').onSnapshot((querySnapShot) => {
+          // create caching
+          const allUsers = []
+          // cash docs
+          querySnapShot.forEach((doc) => {
+              allUsers.push(doc.data())
+          })
+          // inject cashed messages into props
+          this.users = allUsers
+        })
       }
     },
     created () {
       let user = firebase.auth().currentUser
-      let vm = this
       if (user) {
-
-        const firestoreDb = firebase.firestore();
-        const oldRealTimeDb = firebase.database();
-
-        const usersRef = firestoreDb.collection('profiles'); // Get a firestore reference to the Users collection;
-        const onlineRef = oldRealTimeDb.ref('.info/connected'); // Get a database reference to the list of connections
-        const presence = oldRealTimeDb.ref('/presence/' + user.uid) // ref for presense in db
-        const status = oldRealTimeDb.ref(`/status/${user.uid}`) // status reference
-
         onlineRef.on('value', (snapshot) => {
-          console.log(snapshot.val())
-          if (snapshot.val()) { // if vlaue is true
-            // push the device into presence ref
-            presence.push()
-
-            status
-            .onDisconnect() // Set up the disconnect hook
-            .set('offline') // The value to be set for this key when the client disconnects
-            .then((meow) => {
-              console.log(meow)
-              // Set the Firestore User's online status to true
-                usersRef
-                  .doc(user.uid)
-                  .set({
-                    online: true,
-                  }, { merge: true})
-
-                vm.isActive = true
-                // Let's also create a key in our real-time database
-                // The value is set to 'online'
-                status.set('online')
+          if (snapshot.val() === true) { // if vlaue is true
+            console.log('app connected!')
+            usersRef.doc(user.uid).update({
+              liveStatus: 'online'
             })
-            
-            presence.onDisconnect().set(false).then(() => {})
-            presence.set(true)
+          } else {
+            console.log('app disconnected!')
           }
 
         })
-        /* Note: the following code is just for
-        /* testing purposes only!
-        /* It is not for production yet
-        */
-        // on idle
-        document.onIdle = function () {
-          // Let's also create a key in our real-time database
-          // The value is set to 'idle'
-          oldRealTimeDb.ref(`/status/${user.uid}`).set('idle')
-        }
-        // on away
-        document.onAway = function () {
-          // Let's also create a key in our real-time database
-          // The value is set to 'away'
-          oldRealTimeDb.ref(`/status/${user.uid}`).set('away')
-        }
-        // on back
-        document.onBack = function () {
-          // Let's also create a key in our real-time database
-          // The value is set to 'online'
-          oldRealTimeDb.ref(`/status/${user.uid}`).set('online')
-        }
 
-        console.log('isActive?', this.isActive)
-
+        this.isActive = user.liveStatus
         this.authUser = user
         this.profileImg = this.authUser.photoURL
         const allUsers = []
@@ -280,16 +254,20 @@
           this.authUser = {}
         }
         this.fetchMsg()
+        this.fetchUsers()
 
-        // fetch all users
-        this.loading = true
-        axios.get('https://us-central1-chat-app-f412a.cloudfunctions.net/listUsers').then(response => {
-          this.users = response.data.users
-          this.loading = false
-          // this.users.forEach((user) => {
+
+        // Note: in case if I would capture all users using admin SDK this is the code
+        // but it is much more slower than DB
+
+        // this.loading = true
+        // axios.get('https://us-central1-chat-app-f412a.cloudfunctions.net/listUsers').then(response => {
+        //   this.users = response.data.users
+        //   this.loading = false
+        //   // this.users.forEach((user) => {
             
-          // })
-        }).catch(err => console.log(err))
+        //   // })
+        // }).catch(err => console.log(err))
       },
       beforeRouteEnter(to, from, next) {
         next(vm => {

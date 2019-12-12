@@ -127,7 +127,8 @@
                 postcode: null,
                 id: user.uid,
                 email: user.email,
-                liveStatus: null
+                liveStatus: null,
+                photo: user.photoURL
               })
               .then(() => {
                 console.log("Document written with ID: ")
