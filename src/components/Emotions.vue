@@ -65,6 +65,7 @@
     methods: {
       choose (emoji) {
         this.$emit('click', emoji)
+        console.log(emoji)
       }
     },
     created () {
