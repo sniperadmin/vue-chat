@@ -3,7 +3,9 @@
     <v-menu
       v-model="menu"
       :close-on-content-click="false"
-      :nudge-width="200"
+      :nudge-width="230"
+      left
+      top
       offset-x
     >
       <template v-slot:activator="{ on }">
@@ -13,7 +15,7 @@
       </template>
 
       <v-card>
-          <p>Emoticons</p>
+        Emoticons
         <v-container
           fluid
           id="scroll-target"
@@ -26,10 +28,17 @@
             style="height: 100px"
           >
           <div>
-            <EmojiValues @click="choose" v-for="(emoji, index) in emojis" :key="index" :emoji="emoji" />
+            <!-- component emojiValues -->
+            <EmojiValues
+              @click="choose"
+              v-for="(emoji, index) in emojis"
+              :key="index"
+              :emoji="emoji"
+            />
           </div>
           </v-row>
         </v-container>
+
       </v-card>
     </v-menu>
   </div>
@@ -50,7 +59,7 @@
       }
     },
     data: () => ({
-      menu: true,
+      menu: false, // turning on/off the emotions menu
       emojis: []
     }),
     methods: {
@@ -61,7 +70,6 @@
     created () {
       axios.get('https://raw.githubusercontent.com/shanraisshan/EmojiCodeSheet/master/json/string/People.json')
         .then((res) => {
-          console.log(res.data.peoples.people)
           this.emojis = res.data.peoples.people
         })
         .catch(() => console.log('error'))

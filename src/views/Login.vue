@@ -72,7 +72,7 @@
 
 <script>
   import firebase from 'firebase'
-  import { db } from "../main"
+  import { db } from "../fb"
 
   export default {
     name: 'login',
@@ -118,6 +118,23 @@
           } = result
 
           console.log(user)
+
+          // Add a new document with a generated id.
+            db.collection("profiles").doc(user.uid).set({
+                name: user.displayName,
+                phone: user.phoneNumber,
+                address: null,
+                postcode: null,
+                id: user.uid,
+                email: user.email,
+                liveStatus: null
+              })
+              .then(() => {
+                console.log("Document written with ID: ")
+              })
+              .catch(error => {
+                console.error("Error adding document: ", error)
+              })
 
           this.$router.push('/');
         }).catch((error) => {

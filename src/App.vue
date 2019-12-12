@@ -31,9 +31,6 @@
       <v-spacer></v-spacer>
 
       <!-- some content here -->
-      <v-btn @click="logout">
-        logout
-      </v-btn>
     </v-app-bar>
 
     <v-content>
@@ -43,23 +40,10 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-
 export default {
   name: 'App',
   data: () => ({
-    //
-  }),
-  methods: {
-     logout() {
-      firebase.auth().signOut().then(() => {
-        // Sign-out successful.
-      }).catch((error) => {
-        // An error happened.
-        console.log(error)
-      })
-    }
-  }
+    // ...
+  })
 }
-
 </script>
