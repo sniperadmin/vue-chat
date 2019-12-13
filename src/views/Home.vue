@@ -4,18 +4,14 @@
       text-center
       wrap
     >
+      <!-- logo -->
       <Vuetify-logo></Vuetify-logo>
-
+      <!-- hero [title] -->
       <Hero />
-
-      <v-flex xs12>
-        <div v-if="currentUser">
-          <profile-menu :profileImg="authUser.photoURL" :username="authUser.displayName" :useremail="authUser.email" />
-          <v-btn @click="logout" color="error">
-            <v-icon>mdi-power</v-icon>
-            logout
-          </v-btn>
-        </div>
+      <!-- buttons -->
+      <v-flex xs12 v-if="currentUser">
+        <profile-menu :profileImg="authUser.photoURL" :username="authUser.displayName" :useremail="authUser.email" />
+        <Logout @click="logout" />
       </v-flex>
 
       <!-- guides -->
@@ -33,7 +29,6 @@
             <v-row dense no-gutters>
               <!-- first col [users] -->
               <v-col cols="3">
-
                 <!-- row#1 -->
                 <v-row no-gutters>
                   <v-col>
@@ -54,7 +49,6 @@
 
               <!-- second col [messages] -->
               <v-col cols="9">
-
                 <!-- row#1 -->
                 <v-row no-gutters>
                   <v-col>
@@ -71,8 +65,8 @@
                     <Messages :messages="messages" :authUser="authUser" />
                   </v-col>
                 </v-row>
-                
               </v-col>
+
             </v-row>
           </v-layout>
         </v-col>
@@ -90,7 +84,8 @@
   import Guides from '@/components/Guides'
   import Typer from '@/components/Typer'
   import Users from '@/components/Users'
-  import Messages from "@/components/Messages"
+  import Messages from '@/components/Messages'
+  import Logout from "@/components/Logout";
 
   const firestoreDb = firebase.firestore()
   const oldRealTimeDb = firebase.database()
@@ -108,7 +103,8 @@
       Guides,
       Typer,
       Users,
-      Messages
+      Messages,
+      Logout
     },
     data: () => ({
       messages: [],

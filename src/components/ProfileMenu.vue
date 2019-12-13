@@ -56,10 +56,7 @@ import EditForm from "@/components/EditForm";
         type: String,
         default: null
       }
-    },
-    data: () => ({
-      menu: false, // turning on/off the menu
-    })
+    }
   }
 </script>
 
