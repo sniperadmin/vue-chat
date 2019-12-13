@@ -27,44 +27,42 @@
       </v-btn>
     </v-flex>
 
-    <v-flex>
-      <!-- <v-form
-        ref="form"
-        v-model="valid"
-        lazy-validation
+    <!-- <v-form
+      ref="form"
+      v-model="valid"
+      lazy-validation
+    >
+      <v-text-field
+        v-model="name"
+        :counter="10"
+        :rules="nameRules"
+        label="Name"
+        required
+      ></v-text-field>
+
+      <v-text-field
+        v-model="email"
+        :rules="emailRules"
+        label="E-mail"
+        required
+      ></v-text-field>
+
+      <v-text-field
+        v-model="password"
+        :rules="passwordRules"
+        label="Password"
+        required
       >
-        <v-text-field
-          v-model="name"
-          :counter="10"
-          :rules="nameRules"
-          label="Name"
-          required
-        ></v-text-field>
-
-        <v-text-field
-          v-model="email"
-          :rules="emailRules"
-          label="E-mail"
-          required
-        ></v-text-field>
-
-        <v-text-field
-          v-model="password"
-          :rules="passwordRules"
-          label="Password"
-          required
-        >
-        </v-text-field>
-        <v-btn
-          :disabled="!valid"
-          color="success"
-          class="mr-4"
-          @click="login"
-        >
-          Login
-        </v-btn>
-      </v-form> -->
-    </v-flex>
+      </v-text-field>
+      <v-btn
+        :disabled="!valid"
+        color="success"
+        class="mr-4"
+        @click="login"
+      >
+        Login
+      </v-btn>
+    </v-form> -->
 
   </v-layout>
 </v-container>
@@ -72,7 +70,7 @@
 
 <script>
   import firebase from 'firebase'
-  import { db } from "../fb"
+  import { db } from '../fb'
 
   export default {
     name: 'login',
@@ -120,7 +118,7 @@
           console.log(user)
 
           // Add a new document with a generated id.
-            db.collection("profiles").doc(user.uid).set({
+            db.collection('profiles').doc(user.uid).set({
                 name: user.displayName,
                 phone: user.phoneNumber,
                 address: null,
@@ -131,13 +129,14 @@
                 photo: user.photoURL
               })
               .then(() => {
-                console.log("Document written with ID: ")
+                console.log(`Document written with ID: ${user.uid}`)
               })
               .catch(error => {
-                console.error("Error adding document: ", error)
+                console.error(`Error adding document: `, error)
               })
 
-          this.$router.push('/');
+          this.$router.push('/')
+
         }).catch((error) => {
           console.error('error sign in with google', error)
         })
@@ -169,23 +168,23 @@
         // set validation here
 
         firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(user => {
+          .then(() => {
 
             // Add a new document with a generated id.
-            db.collection("profiles").doc(user.user.uid).set({
-                name: this.name,
-                phone: null,
-                address: null,
-                postcode: null,
-                id: user.user.uid,
-                email: this.email
-              })
-              .then(() => {
-                console.log("Document written with ID: ")
-              })
-              .catch(error => {
-                console.error("Error adding document: ", error)
-              })
+            // db.collection('profiles').doc(user.user.uid).set({
+            //     name: this.name,
+            //     phone: user.user.phoneNumber,
+            //     address: null,
+            //     postcode: null,
+            //     id: user.user.uid,
+            //     email: this.email
+            //   })
+            //   .then(() => {
+            //     console.log(`Document written with ID: ${user.user.uid}`)
+            //   })
+            //   .catch(error => {
+            //     console.error(`Error adding document: `, error)
+            //   })
 
             this.$router.replace('/')
           })
@@ -206,15 +205,6 @@
           })
         // [END createwithemail]
       }
-  },
-   computed: {
-    activeFab () {
-      switch (this.tabs) {
-        case 'one': return { color: 'success', icon: 'mdi-share' }
-        case 'two': return { color: 'red', icon: 'mdi-edit' }
-        default: return {}
-      }
-    }
   }
 }
 </script>

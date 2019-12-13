@@ -26,11 +26,30 @@
             </v-list-item-content>
 
             <v-list-item-action>
-              <edit-form />
+              <!-- edit form -->
+              <edit-form :name="username" :email="useremail" :phone="phone" :address="address" :postcode="postcode" class="mx-auto" />
             </v-list-item-action>
           </v-list-item>
          </v-list>
-        <!-- <v-divider></v-divider> -->
+
+        <v-divider></v-divider>
+
+        <v-list-item-action class="mx-5">
+          <v-row>
+            <v-col>
+              <v-btn color="error" outlined disabled>
+                <v-icon>mdi-lock-reset</v-icon>
+                reset password
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn color="error" outlined disabled>
+                <v-icon>mdi-delete</v-icon>
+                delete account
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-list-item-action>
       </v-card>
 
     </v-menu>
@@ -53,6 +72,18 @@ import EditForm from "@/components/EditForm";
         default: null
       },
       useremail: {
+        type: String,
+        default: null
+      },
+      phone: {
+        type: String,
+        default: null
+      },
+      address: {
+        type: String,
+        default: null
+      },
+      postcode: {
         type: String,
         default: null
       }

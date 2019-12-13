@@ -10,7 +10,14 @@
       <Hero />
       <!-- buttons -->
       <v-flex xs12 v-if="currentUser">
-        <profile-menu :profileImg="authUser.photoURL" :username="authUser.displayName" :useremail="authUser.email" />
+        <profile-menu
+          :profileImg="authUser.photoURL"
+          :username="authUser.displayName"
+          :useremail="authUser.email"
+          :phone="authUser.phoneNumber"
+          :address="authUser.address"
+          :postcode="authUser.postcode"
+        />
         <Logout @click="logout" />
       </v-flex>
 
