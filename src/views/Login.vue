@@ -27,43 +27,8 @@
       </v-btn>
     </v-flex>
 
-    <!-- <v-form
-      ref="form"
-      v-model="valid"
-      lazy-validation
-    >
-      <v-text-field
-        v-model="name"
-        :counter="10"
-        :rules="nameRules"
-        label="Name"
-        required
-      ></v-text-field>
-
-      <v-text-field
-        v-model="email"
-        :rules="emailRules"
-        label="E-mail"
-        required
-      ></v-text-field>
-
-      <v-text-field
-        v-model="password"
-        :rules="passwordRules"
-        label="Password"
-        required
-      >
-      </v-text-field>
-      <v-btn
-        :disabled="!valid"
-        color="success"
-        class="mr-4"
-        @click="login"
-      >
-        Login
-      </v-btn>
-    </v-form> -->
-
+    <Tabs />
+    
   </v-layout>
 </v-container>
 </template>
@@ -71,69 +36,42 @@
 <script>
   import firebase from 'firebase'
   import { db } from '../fb'
+  import Tabs from "@/components/Tabs";
 
   export default {
     name: 'login',
-    data: () => ({
-      valid: true,
-      fab: false,
-      hidden: false,
-      tabs: null,
-      name: null,
-      nameRules: [
-        v => !!v || 'Name is required!',
-        v => (v && v.length <= 10 || 'Name must be less than 10 charactera')
-      ],
-      email: null,
-      emailRules: [
-        v => !!v || 'Email is required',
-        v => /.+@.+\..+/.test(v) || 'Please Enter a valid e-mail'
-      ],
-      password: null,
-      passwordRules: [
-        v => !!v || 'Password is required!',
-        v => (v && v.length >= 6 || 'Name must be more than 6 charactera')
-
-      ],
-      phone: null,
-      address: null,
-      postcode: null,
-      boo: null
-      // reminder for me to add validations
-    }),
+    components: {
+      Tabs
+    },
     methods: {
       loginGoogle () {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+        const provider = new firebase.auth.GoogleAuthProvider()
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
 
         firebase.auth().signInWithPopup(provider).then((result) => {
           // This gives you a Google Access Token. You can use it to access the Google API.
           const token = result.credential.accessToken
           console.log(token)
           // The signed-in user info.
-          const {
-            user
-          } = result
-
-          console.log(user)
+          // const { user } = result
 
           // Add a new document with a generated id.
-            db.collection('profiles').doc(user.uid).set({
-                name: user.displayName,
-                phone: user.phoneNumber,
-                address: null,
-                postcode: null,
-                id: user.uid,
-                email: user.email,
-                liveStatus: null,
-                photo: user.photoURL
-              })
-              .then(() => {
-                console.log(`Document written with ID: ${user.uid}`)
-              })
-              .catch(error => {
-                console.error(`Error adding document: `, error)
-              })
+            // db.collection('profiles').doc(user.uid).set({
+            //     name: user.displayName,
+            //     phone: user.phoneNumber,
+            //     address: null,
+            //     postcode: null,
+            //     id: user.uid,
+            //     email: user.email,
+            //     liveStatus: null,
+            //     photo: user.photoURL
+            //   })
+            //   .then(() => {
+            //     console.log(`Document written with ID: ${user.uid}`)
+            //   })
+            //   .catch(error => {
+            //     console.error(`Error adding document: `, error)
+            //   })
 
           this.$router.push('/')
 
@@ -168,23 +106,28 @@
         // set validation here
 
         firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(() => {
+          .then((result) => {
+
+            const { user } = user
+
+            const token = result.credential.accessToken
+            console.log(token)
 
             // Add a new document with a generated id.
-            // db.collection('profiles').doc(user.user.uid).set({
-            //     name: this.name,
-            //     phone: user.user.phoneNumber,
-            //     address: null,
-            //     postcode: null,
-            //     id: user.user.uid,
-            //     email: this.email
-            //   })
-            //   .then(() => {
-            //     console.log(`Document written with ID: ${user.user.uid}`)
-            //   })
-            //   .catch(error => {
-            //     console.error(`Error adding document: `, error)
-            //   })
+            db.collection('profiles').doc(user.user.uid).set({
+                name: this.name,
+                phone: null,
+                address: null,
+                postcode: null,
+                id: user.user.uid,
+                email: this.email
+              })
+              .then(() => {
+                console.log(`Document written with ID: ${user.user.uid}`)
+              })
+              .catch(error => {
+                console.error(`Error adding document: `, error)
+              })
 
             this.$router.replace('/')
           })
@@ -205,6 +148,22 @@
           })
         // [END createwithemail]
       }
+  },
+  computed: {
+    activeFab () {
+      switch (this.tabs) {
+        case 'one':
+          return {
+            label: 'Display Name *',
+            hint: 'this will be shown on your profile',
+            rules: this.nameRules,
+            model: this.name
+          }
+        case 'two': return { color: 'red', icon: 'mdi-edit' }
+        case 'three': return { color: 'green', icon: 'mdi-keyboard_arrow_up' }
+        default: return {}
+      }
+    },
   }
 }
 </script>
