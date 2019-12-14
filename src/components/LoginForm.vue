@@ -13,15 +13,6 @@
           ref="login"
           v-model="valid"
         >
-          
-
-          <v-text-field
-            label="Display Name *"
-            :rules="nameRules"
-            required
-            v-model="name"
-          ></v-text-field>
-
           <v-text-field
             label="Email *"
             type="email"
@@ -30,18 +21,30 @@
             v-model="email"
           ></v-text-field>
 
+          <v-text-field
+            label="password *"
+            :rules="passwordRules"
+            required
+            v-model="password"
+          ></v-text-field>
+
         </v-form>
       </v-container>
       <small>*indicates required field</small>
+      <p style="color: red">
+        <small v-if="boo">{{ boo }}</small>
+      </p>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" text :disabled="!valid">Login</v-btn>
+      <v-btn color="blue darken-1" text :disabled="!valid" @click="login">Login</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+  import { firebase } from '../fb'
+
   export default {
     name: 'login-form',
     data: () => ({
@@ -68,6 +71,29 @@
       boo: null
       // reminder for me to add validations
     }),
+    methods: {
+      login () {
+        let email = this.email,
+          password = this.password;
+        
+        if (this.$refs.login.validate()) {
+          
+          
+          firebase.auth().signInWithEmailAndPassword(email, password)
+          .then(() => {
+            
+            console.log('logged in successfully!')
+
+            this.$router.push('/');
+
+          })
+          .catch((err) => {
+            console.error('error login!', err)
+            this.boo = err.message
+          })
+        }
+      }
+    }
   }
 </script>
 

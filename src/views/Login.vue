@@ -47,7 +47,7 @@
     methods: {
       loginGoogle () {
         const provider = new firebase.auth.GoogleAuthProvider()
-        provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+        // provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
 
         firebase.auth().signInWithPopup(provider).then((result) => {
           // This gives you a Google Access Token. You can use it to access the Google API.
@@ -79,24 +79,7 @@
         }).catch((error) => {
           console.error('error sign in with google', error)
         })
-      },
-      login () {
-        let email = this.email,
-          password = this.password;
-        
-        if (this.$refs.form.validate()) {
-          
-          
-          firebase.auth().signInWithEmailAndPassword(email, password)
-          .then(() => {
-            
-            console.log('logged in successfully!')
-
-            this.$router.push('/');
-
-          })
-          .catch((err) => console.error('error login!', err))
-        }
+      }
     },
     register() {
         // Sign in with email and pass.
@@ -148,7 +131,6 @@
             // [END_EXCLUDE]
           })
         // [END createwithemail]
-      }
   },
   computed: {
     activeFab () {
