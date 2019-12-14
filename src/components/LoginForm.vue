@@ -1,46 +1,44 @@
 <template>
-  <v-flex>
-    <v-card outlined color="blue-grey darken-3">
-      <v-card-title>
-      <v-avatar>
-        <img src="../assets/logo.svg" alt="test">
-      </v-avatar>
-        <span class="headline text-center">login</span>
-      </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-form
-            ref="login"
-            v-model="valid"
-          >
-            
+  <v-card outlined color="blue-grey darken-3">
+    <v-card-title>
+    <v-avatar>
+      <img src="../assets/logo.svg" alt="test">
+    </v-avatar>
+      <span class="headline text-center">login </span>
+    </v-card-title>
 
-            <v-text-field
-              label="Display Name *"
-              :rules="nameRules"
-              required
-              v-model="name"
-            ></v-text-field>
+    <v-card-text>
+      <v-container>
+        <v-form
+          ref="login"
+          v-model="valid"
+        >
+          
 
-            <v-text-field
-              label="Email *"
-              type="email"
-              :rules="emailRules"
-              required
-              v-model="email"
-            ></v-text-field>
+          <v-text-field
+            label="Display Name *"
+            :rules="nameRules"
+            required
+            v-model="name"
+          ></v-text-field>
 
-          </v-form>
-        </v-container>
-        <small>*indicates required field</small>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text>Close</v-btn>
-        <v-btn color="blue darken-1" text :disabled="!valid">Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-flex>
+          <v-text-field
+            label="Email *"
+            type="email"
+            :rules="emailRules"
+            required
+            v-model="email"
+          ></v-text-field>
+
+        </v-form>
+      </v-container>
+      <small>*indicates required field</small>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="blue darken-1" text :disabled="!valid">Login</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>

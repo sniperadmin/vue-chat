@@ -4,14 +4,20 @@
       :src="require('../assets/logo.svg')"
       class="my-3"
       contain
-      height="100"
+      :height="height"
     ></v-img>
   </v-flex>
 </template>
 
 <script>
   export default {
-    name: 'vuetify-logo'
+    name: 'vuetify-logo',
+    props: {
+      height: {
+        type: Number,
+        default: 50
+      }
+    }
   }
 </script>
 

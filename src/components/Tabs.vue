@@ -24,16 +24,30 @@
       >
         <v-card flat>
           <v-card-text>
-            under construction!
+            <v-alert
+              outlined
+              type="warning"
+              prominent
+              border="left"
+            >
+              under construction
+            </v-alert>
           </v-card-text>
         </v-card>
       </v-tab-item>
 
-        <v-tab-item>
-        <v-card flat>
+      <v-tab-item>
+        <v-card>
           <v-card-text>
-            under construction
-            <Login-form></Login-form>
+            <v-alert
+              outlined
+              type="warning"
+              prominent
+              border="left"
+            >
+              under construction
+            </v-alert>
+          <Login-form></Login-form>
           </v-card-text>
         </v-card>
       </v-tab-item>

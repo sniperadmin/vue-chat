@@ -4,14 +4,8 @@
       text-center
       wrap
     >
-    <v-flex xs12>
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="100"
-        ></v-img>
-      </v-flex>
+      
+      <Vuetify-logo :height="80" />
 
       <v-flex mb-4>
         <h5 class="display-1 font-weight-bold mb-3">
@@ -19,15 +13,20 @@
         </h5>
       </v-flex>
 
-    <!-- google sign in -->
-    <v-flex xs12>
-      <v-btn class="mx-2" dark color="pink" @click="loginGoogle">
-        <v-icon dark class="mx-2">mdi-google</v-icon>
-        sign in via google
-      </v-btn>
-    </v-flex>
+      <!-- google sign in -->
+      <v-flex xs12 mb-4>
+        <v-btn class="mx-2" dark color="pink" @click="loginGoogle">
+          <v-icon dark class="mx-2">mdi-google</v-icon>
+          sign in via google
+        </v-btn>
+      </v-flex>
 
-    <Tabs />
+      <v-row justify="center">
+        <v-col cols="5">
+          <Tabs />
+        </v-col>
+      </v-row>
+
     
   </v-layout>
 </v-container>
@@ -36,12 +35,14 @@
 <script>
   import firebase from 'firebase'
   import { db } from '../fb'
-  import Tabs from "@/components/Tabs";
+  import Tabs from '@/components/Tabs'
+  import VuetifyLogo from '@/components/VuetifyLogo'
 
   export default {
     name: 'login',
     components: {
-      Tabs
+      Tabs,
+      VuetifyLogo
     },
     methods: {
       loginGoogle () {
