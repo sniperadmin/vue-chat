@@ -11,7 +11,7 @@
       <!-- buttons -->
       <v-flex xs12 v-if="currentUser">
         <profile-menu
-          :profileImg="authUser.photoURL"
+          :profileImg="profileImg"
           :username="authUser.displayName"
           :useremail="authUser.email"
           :phone="authUser.phoneNumber"

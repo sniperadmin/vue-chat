@@ -78,7 +78,6 @@
         
         if (this.$refs.login.validate()) {
           
-          
           firebase.auth().signInWithEmailAndPassword(email, password)
           .then(() => {
             
