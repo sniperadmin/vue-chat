@@ -53,25 +53,25 @@
           const token = result.credential.accessToken
           console.log(token)
           // The signed-in user info.
-          // const { user } = result
+          const { user } = result
 
           // Add a new document with a generated id.
-            // db.collection('profiles').doc(user.uid).set({
-            //     name: user.displayName,
-            //     phone: user.phoneNumber,
-            //     address: null,
-            //     postcode: null,
-            //     id: user.uid,
-            //     email: user.email,
-            //     liveStatus: null,
-            //     photo: user.photoURL
-            //   })
-            //   .then(() => {
-            //     console.log(`Document written with ID: ${user.uid}`)
-            //   })
-            //   .catch(error => {
-            //     console.error(`Error adding document: `, error)
-            //   })
+            db.collection('profiles').doc(user.uid).set({
+                name: user.displayName,
+                phone: user.phoneNumber,
+                address: null,
+                postcode: null,
+                id: user.uid,
+                email: user.email,
+                liveStatus: null,
+                photo: user.photoURL
+              })
+              .then(() => {
+                console.log(`Document written with ID: ${user.uid}`)
+              })
+              .catch(error => {
+                console.error(`Error adding document: `, error)
+              })
 
           this.$router.push('/')
 
