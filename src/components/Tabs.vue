@@ -24,14 +24,15 @@
       >
         <v-card flat>
           <v-card-text>
-            <v-alert
+            <!-- <v-alert
               outlined
               type="warning"
               prominent
               border="left"
             >
               under construction
-            </v-alert>
+            </v-alert> -->
+              <Register-form />
           </v-card-text>
         </v-card>
       </v-tab-item>
@@ -39,14 +40,14 @@
       <v-tab-item>
         <v-card>
           <v-card-text>
-            <v-alert
+            <!-- <v-alert
               outlined
               type="warning"
               prominent
               border="left"
             >
               under construction
-            </v-alert>
+            </v-alert> -->
           <Login-form></Login-form>
           </v-card-text>
         </v-card>
@@ -56,11 +57,13 @@
   </v-card>
 </template>
 <script>
-  import LoginForm from "@/components/LoginForm";
+  import LoginForm from '@/components/LoginForm'
+  import RegisterForm from '@/components/RegisterForm'
   export default {
     name: 'tabs',
     components: {
-      LoginForm
+      LoginForm,
+      RegisterForm
     },
     data () {
       return {

@@ -11,8 +11,8 @@
       <!-- buttons -->
       <v-flex xs12 v-if="currentUser">
         <profile-menu
-          :profileImg="profileImg"
-          :username="authUser.displayName"
+          :profileImg="authUser.photo"
+          :username="authUser.name"
           :useremail="authUser.email"
           :phone="authUser.phoneNumber"
           :address="authUser.address"
@@ -22,7 +22,9 @@
       </v-flex>
 
       <!-- guides -->
-      <Guides />
+      <v-flex xs12>
+        <Guides />
+      </v-flex>
       
       <!-- the actual app here -->
       <v-row dense no-gutters>
@@ -79,6 +81,27 @@
         </v-col>
       </v-row>
     </v-layout>
+    
+    <v-snackbar
+      v-model="snackbar"
+      right
+      top
+    >
+       <span v-if="appOn">
+         {{ notifications[1] }}
+       </span>
+       <span v-if="!appOn">
+         {{ notifications[2] }}
+       </span>
+      <v-btn
+        color="pink"
+        text
+        @click="snackbar = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -120,7 +143,10 @@
       isActive: '',
       authUser:{},
       profileImg:'https://lh5.googleusercontent.com/-U1TFOGH-4DQ/AAAAAAAAAAI/AAAAAAAAAuE/tS4M30mPvU8/photo.jpg',
-      loading: false
+      loading: false,
+      snackbar: false,
+      notifications: ['logged In!', 'App Online!', 'App Offline'],
+      appOn: false
     }),
     methods: {
       logout() {
@@ -167,18 +193,19 @@
       if (user) {
         onlineRef.on('value', (snapshot) => {
           if (snapshot.val() === true) { // if vlaue is true
-            console.log('app connected!')
+            this.appOn = true
+            this.snackbar = true
+
             usersRef.doc(user.uid).update({
               liveStatus: 'online'
             })
           } else {
-            console.log('app disconnected!')
+            this.appOn = false
           }
         })
 
         this.isActive = user.liveStatus
         this.authUser = user
-        console.log(this.authUser)
         this.profileImg = this.authUser.photoURL
         const allUsers = []
         allUsers.push(user)

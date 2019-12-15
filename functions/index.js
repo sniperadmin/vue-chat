@@ -56,3 +56,25 @@ exports.onUserStatusChanged = functions.database
       return 0;
     })
   });
+
+exports.createNewUser = functions.https.onRequest((req, res) => {
+  admin.auth().createUser({
+    email: req.body.email,
+    emailVerified: false,
+    phoneNumber: req.body.phone,
+    password: req.body.password,
+    displayName: req.body.name,
+    photoURL: req.body.photo,
+    disabled: false
+  })
+    .then((userRecord) => {
+      // See the UserRecord reference doc for the contents of userRecord.
+      // console.log('Successfully created new user:', userRecord.uid);
+      let registeredUser = userRecord;
+      return registeredUser;
+    })
+    .catch((error) => {
+      console.log('Error creating new user:', error);
+      res.status(500).send({error});
+    });
+})

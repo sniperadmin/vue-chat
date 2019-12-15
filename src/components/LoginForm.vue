@@ -23,6 +23,7 @@
 
           <v-text-field
             label="password *"
+            type="password"
             :rules="passwordRules"
             required
             v-model="password"
@@ -37,7 +38,16 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" text :disabled="!valid" @click="login">Login</v-btn>
+      <v-btn
+        color="blue darken-1"
+        text :disabled="!valid"
+        @keydown.enter="login"
+        @click="login"
+        :loading="loading"
+      >
+        Login
+      </v-btn>
+      
     </v-card-actions>
   </v-card>
 </template>
@@ -49,11 +59,6 @@
     name: 'login-form',
     data: () => ({
       valid: true,
-      name: null,
-      nameRules: [
-        v => !!v || 'Name is required!',
-        v => (v && v.length <= 10 || 'Name must be less than 10 charactera')
-      ],
       email: null,
       emailRules: [
         v => !!v || 'Email is required',
@@ -65,14 +70,13 @@
         v => (v && v.length >= 6 || 'Name must be more than 6 charactera')
 
       ],
-      phone: null,
-      address: null,
-      postcode: null,
-      boo: null
+      boo: null,
+      loading: false
       // reminder for me to add validations
     }),
     methods: {
       login () {
+        this.loading = true
         let email = this.email,
           password = this.password;
         
@@ -81,13 +85,12 @@
           firebase.auth().signInWithEmailAndPassword(email, password)
           .then(() => {
             
-            console.log('logged in successfully!')
-
+            this.loading = false
             this.$router.push('/');
 
           })
           .catch((err) => {
-            console.error('error login!', err)
+            this.loading = false
             this.boo = err.message
           })
         }

@@ -30,11 +30,13 @@
                     left
                     :color="authUser.liveStatus === 'online' ? 'green' : 'grey'" v-if="message.email !== authUser.email"
                   >
-                  {{ message.author.slice(0, 1) }}
+                  <!-- {{ message.author.slice(0, 1) }} -->
+                  ?
                   </v-avatar>
                   {{ message.message }}
                   <v-avatar right :color="authUser.liveStatus === 'offline' ? 'green' : 'grey'" v-if="message.email === authUser.email">
-                    {{ message.author.slice(0, 1) }}
+                    <!-- {{ message.author.slice(0, 1) }} -->
+                    Me
                   </v-avatar>
                 </v-chip>
               </v-list-item-title>

@@ -1,4 +1,12 @@
 <template>
+  <v-container
+    id="scroll-target"
+    sm9
+    order-xs1
+    style="max-height: 400px"
+    class="overflow-y-auto"
+    v-chat-scroll="{ always: false, smooth: true, scrollonremoved: true }"
+  >
 
     <v-list
       subheader
@@ -27,6 +35,7 @@
         </v-list-item-icon>
       </v-list-item>
     </v-list>
+  </v-container>
 </template>
 
 <script>
