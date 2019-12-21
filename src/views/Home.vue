@@ -149,6 +149,34 @@
       appOn: false
     }),
     methods: {
+      runCashingUser (user) {
+        if (user) {
+          onlineRef.on('value', (snapshot) => {
+            if (snapshot.val() === true) { // if vlaue is true
+              this.appOn = true
+              this.snackbar = true
+  
+              usersRef.doc(user.uid).update({
+                liveStatus: 'online'
+              })
+            } else {
+              this.appOn = false
+            }
+          })
+          // setting active status
+          this.isActive = user.liveStatus
+          // injecting user object
+          this.authUser = user
+          // injecting photo
+          this.profileImg = this.authUser.photoURL
+          // cashing user
+          const allUsers = []
+          allUsers.push(user)
+          this.currentUser = allUsers
+          } else {
+            this.authUser = {}
+          }
+      },
       logout() {
         let user = firebase.auth().currentUser
         firebase.auth().signOut().then(() => {
@@ -191,39 +219,9 @@
       }
     },
     created () {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          onlineRef.on('value', (snapshot) => {
-            if (snapshot.val() === true) { // if vlaue is true
-              this.appOn = true
-              this.snackbar = true
-  
-              usersRef.doc(user.uid).update({
-                liveStatus: 'online'
-              })
-            } else {
-              this.appOn = false
-            }
-          })
-          // setting active status
-          this.isActive = user.liveStatus
-          // injecting user object
-          this.authUser = user
-          // injecting photo
-          this.profileImg = this.authUser.photoURL
-          // cashing user
-          const allUsers = []
-          allUsers.push(user)
-          this.currentUser = allUsers
-
-          this.fetchMsg()
-          this.fetchUsers()
-
-          } else {
-            this.authUser = {}
-          }
-      })
-
+      firebase.auth().onAuthStateChanged(this.runCashingUser)
+      this.fetchMsg()
+      this.fetchUsers()
 
         // Note: in case if I would capture all users using admin SDK this is the code
         // but it is much more slower than DB

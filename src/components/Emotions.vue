@@ -65,7 +65,7 @@
     methods: {
       choose (emoji) {
         this.$emit('click', emoji)
-        console.log(emoji)
+        // console.log(emoji)
       }
     },
     created () {
@@ -73,7 +73,7 @@
         .then((res) => {
           this.emojis = res.data.peoples.people
         })
-        .catch(() => console.log('error'))
+        .catch(() => {})
     }
   }
 </script>

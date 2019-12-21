@@ -43,7 +43,7 @@
       },
       saveMsg () {
         // save to fs
-        console.log(this.authUser)
+        // console.log(this.authUser)
         if (this.message) {
           db.collection('chat').add({
             message: this.message,
