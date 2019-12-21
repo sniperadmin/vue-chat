@@ -39,20 +39,21 @@
     methods: {
       addit (emoji) {
         // console.log(emoji.value)
-        this.message += emoji.value.toString()
+        this.message += emoji.value
       },
       saveMsg () {
         // save to fs
+        console.log(this.authUser)
         if (this.message) {
           db.collection('chat').add({
-            message: this.message.toString(),
-            author: this.authUser.displayName,
+            message: this.message,
+            author: this.authUser.displayName ? this.authUser.displayName : this.authUser.name,
             email: this.authUser.email,
             createdAt: new Date()
           })
           this.message = ''
         }
-      },
+      }
     },
   }
 </script>

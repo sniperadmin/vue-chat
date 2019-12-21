@@ -22,7 +22,7 @@
       </v-flex>
 
       <v-row justify="center">
-        <v-col cols="5">
+        <v-col cols="12" md="10" sm="8">
           <Tabs />
         </v-col>
       </v-row>
@@ -58,6 +58,8 @@
 
           // The signed-in user info.
           const { user } = result
+
+          window.localStorage.setItem('user', JSON.stringify(user))
 
           // Add a new document with a generated id.
             db.collection('profiles').doc(user.uid).set({

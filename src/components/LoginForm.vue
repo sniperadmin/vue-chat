@@ -83,8 +83,10 @@
         if (this.$refs.login.validate()) {
           
           firebase.auth().signInWithEmailAndPassword(email, password)
-          .then(() => {
+          .then((result) => {
             
+            const { user } = result
+            window.localStorage.setItem('user', JSON.stringify(user))
             this.loading = false
             this.$router.push('/');
 

@@ -154,6 +154,7 @@
         firebase.auth().signOut().then(() => {
           // Sign-out successful.
           // updating liveStatus in firestore
+          window.localStorage.setItem('user', JSON.stringify({}))
           usersRef.doc(user.uid).update({
               liveStatus: 'offline'
             })
@@ -171,6 +172,7 @@
           })
           // inject cashed messages into props
           this.messages = allMsgs
+          window.localStorage.setItem('messages', JSON.stringify(this.messages))
         })
       },
       fetchUsers () {
@@ -189,32 +191,38 @@
       }
     },
     created () {
-      let user = firebase.auth().currentUser
-      if (user) {
-        onlineRef.on('value', (snapshot) => {
-          if (snapshot.val() === true) { // if vlaue is true
-            this.appOn = true
-            this.snackbar = true
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          onlineRef.on('value', (snapshot) => {
+            if (snapshot.val() === true) { // if vlaue is true
+              this.appOn = true
+              this.snackbar = true
+  
+              usersRef.doc(user.uid).update({
+                liveStatus: 'online'
+              })
+            } else {
+              this.appOn = false
+            }
+          })
+          // setting active status
+          this.isActive = user.liveStatus
+          // injecting user object
+          this.authUser = user
+          // injecting photo
+          this.profileImg = this.authUser.photoURL
+          // cashing user
+          const allUsers = []
+          allUsers.push(user)
+          this.currentUser = allUsers
 
-            usersRef.doc(user.uid).update({
-              liveStatus: 'online'
-            })
+          this.fetchMsg()
+          this.fetchUsers()
+
           } else {
-            this.appOn = false
+            this.authUser = {}
           }
-        })
-
-        this.isActive = user.liveStatus
-        this.authUser = user
-        this.profileImg = this.authUser.photoURL
-        const allUsers = []
-        allUsers.push(user)
-        this.currentUser = allUsers
-        } else {
-          this.authUser = {}
-        }
-        this.fetchMsg()
-        this.fetchUsers()
+      })
 
 
         // Note: in case if I would capture all users using admin SDK this is the code
