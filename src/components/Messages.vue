@@ -38,8 +38,8 @@
                   <!-- {{ message.author.slice(0, 1) }} -->
                   ?
                   </v-avatar>
-                  <span>
-                     {{ message.message }}
+                  <span v-html="message.message" class="mt-2">
+                     <!-- {{ message.message }} -->
                   </span>
                   <v-avatar right :color="authUser.liveStatus === 'offline' ? 'green' : 'grey'" v-if="message.email === authUser.email">
                     <!-- {{ message.author.slice(0, 1) }} -->
@@ -56,6 +56,8 @@
 </template>
 
 <script>
+// import moment from 'moment'
+
   export default {
     name: 'messages',
     props: {
@@ -70,13 +72,19 @@
     },
     data: () => ({
       // activeMessage: false,
+      lastMessage: null,
+      messageRecieved: false
     }),
     methods: {
-      // toggleMessageOptions (x) {
-      //   console.log(x)
-      //   this.activeMessage = !this.activeMessage
-      // }
+      definer() {
+        // this.lastMessage = this.messages[this.messages.length - 1]
+        // console.log(moment(this.lastMessage.createdAt.seconds).format('LTS'))
+      }
+
     },
+    created () {
+      this.definer()
+    }
   }
 </script>
 

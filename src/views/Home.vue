@@ -25,6 +25,9 @@
       <v-flex xs12>
         <Guides />
       </v-flex>
+      <v-flex xs12>
+        <Notify />
+      </v-flex>
       
       <!-- the actual app here -->
       <v-row dense no-gutters>
@@ -115,7 +118,9 @@
   import Typer from '@/components/Typer'
   import Users from '@/components/Users'
   import Messages from '@/components/Messages'
-  import Logout from "@/components/Logout";
+  import Logout from "@/components/Logout"
+  import Notify from '@/components/PushNotification'
+
 
   const firestoreDb = firebase.firestore()
   const oldRealTimeDb = firebase.database()
@@ -134,7 +139,8 @@
       Typer,
       Users,
       Messages,
-      Logout
+      Logout,
+      Notify
     },
     data: () => ({
       messages: [],

@@ -7,6 +7,7 @@
       v-on:keyup.enter="saveMsg"
       v-model="message"
     >
+
     <!-- emotions panel -->
     <Emoticons @click="addit" />
     <!-- send btn -->
@@ -21,6 +22,8 @@
   import { db } from '../fb'
   import Emoticons from '@/components/Emotions'
 
+  // import moment from 'moment'
+
   export default {
     name: 'typer',
     props: {
@@ -30,11 +33,13 @@
       }
     },
     components: {
-      Emoticons
+      Emoticons,
     },
     data: () => ({
       message: '',
-
+      editorOption: {
+        // ...
+      }
     }),
     methods: {
       addit (emoji) {
@@ -47,9 +52,15 @@
         if (this.message) {
           db.collection('chat').add({
             message: this.message,
-            author: this.authUser.displayName ? this.authUser.displayName : this.authUser.name,
+            author: this.authUser.displayName,
             email: this.authUser.email,
             createdAt: new Date()
+          })
+          .then((ref) => {
+            db.collection('chat').doc(ref.id).update({
+              id: ref.id
+            })
+            this.$emit('sent')
           })
           this.message = ''
         }
@@ -67,9 +78,10 @@
     bottom: 0;
     box-sizing: border-box;
     display: flex;
-    height: 4.9rem;
+    /* height: 4.9rem; */
     padding: 10px;
     width: 100%;
+    color: aliceblue;
   }
   .typer input {
     border: 1px solid grey;

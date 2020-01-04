@@ -116,8 +116,9 @@
               // console.log(token)
 
               const { user } = result
-              // console.log(user.uid)
-              
+
+              // update displayName
+              user.updateProfile({ displayName: this.name })
 
               db.collection('profiles').doc(user.uid).set({
                 name: this.name,
