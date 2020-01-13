@@ -6,10 +6,13 @@
 </v-flex>
 </template>
 
-<script>
-  export default {
-    name: 'hero'
-  }
+<script lang="ts">
+  import { Vue, Component } from 'vue-property-decorator'
+
+  @Component({
+    name: 'Hero',
+  })
+  export default class Hero extends Vue {}
 </script>
 
 <style lang="scss" scoped>

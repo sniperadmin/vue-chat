@@ -23,7 +23,7 @@
           src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
           width="100"
         /> -->
-        <h3>Vue-Chat</h3>
+        <h3>Vue-Chat-TypeScript</h3>
         <v-badge class="mx-2">
           by Nasr Galal
         </v-badge>
@@ -40,11 +40,14 @@
   </v-app>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+// import HelloWorld from './components/HelloWorld.vue';
+
+export default Vue.extend({
   name: 'App',
   data: () => ({
-    // ...
-  })
-}
+    //
+  }),
+});
 </script>

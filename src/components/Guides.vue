@@ -25,10 +25,13 @@
   </v-row>
 </template>
 
-<script>
-  export default {
-    name: 'guides'
-  }
+<script lang="ts">
+  import { Vue, Component } from 'vue-property-decorator';
+
+  @Component({
+    name: 'Guides',
+  })
+  export default class Guides extends Vue {}
 </script>
 
 <style lang="scss" scoped>

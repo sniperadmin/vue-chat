@@ -56,19 +56,22 @@
     </v-tabs-items>
   </v-card>
 </template>
-<script>
+
+
+<script lang="ts">
   import LoginForm from '@/components/LoginForm'
   import RegisterForm from '@/components/RegisterForm'
-  export default {
-    name: 'tabs',
+  import { Vue, Component } from 'vue-property-decorator';
+
+
+  @Component({
+    name: 'Tabs',
     components: {
       LoginForm,
-      RegisterForm
+      RegisterForm,
     },
-    data () {
-      return {
-        tab: null
-      }
-    }
+  })
+  export default class Tabs extends Vue {
+    public tab: boolean = false // to be checked later
   }
 </script>

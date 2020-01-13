@@ -5,8 +5,8 @@
     order-xs1
     style="max-height: 400px"
     class="overflow-y-auto"
-    v-chat-scroll="{ always: false, smooth: true, scrollonremoved: true }"
   >
+    <!-- v-chat-scroll="{ always: false, smooth: true, scrollonremoved: true }" -->
 
     <v-list
       subheader
@@ -38,15 +38,14 @@
   </v-container>
 </template>
 
-<script>
-  export default {
-    name: 'users',
-    props: {
-      users: {
-        type: Array,
-        default: null
-      }
-    }
+<script lang="ts">
+  import { Vue, Component, Prop } from 'vue-property-decorator';
+
+  @Component({
+    name: 'Users',
+  })
+  export default class Users extends Vue {
+    @Prop({ type: Array, required: true }) public readonly users: array;
   }
 </script>
 

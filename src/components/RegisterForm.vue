@@ -65,87 +65,90 @@
   </v-card>
 </template>
 
-<script>
-  import {
-    firebase,
-    db
-  } from '../fb'
+<script lang="ts">
+  // import { firebase, db } from '../fb';
+  import { Vue, Component, Prop } from 'vue-property-decorator';
 
-  export default {
-    name: 'login-form',
-    data: () => ({
-      valid: true,
-      name: null,
-      nameRules: [
-        v => !!v || 'Name is required!',
-        v => (v && v.length <= 10 || 'Name must be less than 10 charactera')
-      ],
-      email: null,
-      emailRules: [
-        v => !!v || 'Email is required',
-        v => /.+@.+\..+/.test(v) || 'Please Enter a valid e-mail'
-      ],
-      password: null,
-      passwordRules: [
-        v => !!v || 'Password is required!',
-        v => (v && v.length >= 6 || 'Name must be more than 6 charactera')
+  @Component({
+    name: 'RegisterForm',
+  })
 
-      ],
-      phone: null,
-      address: null,
-      postcode: null,
-      photo: 'https://lh5.googleusercontent.com/-U1TFOGH-4DQ/AAAAAAAAAAI/AAAAAAAAAuE/tS4M30mPvU8/photo.jpg',
-      boo: null,
-      loading: false
-      // reminder for me to add validations
-    }),
-    methods: {
-      register() {
-        this.loading = true
-        if (this.$refs.register.validate()) {
+  export default class RegisterForm extends Vue {
+    @Prop({ type: String, required: true }) public readonly name: string;
+    @Prop({ type: String, required: true }) public readonly phone: string;
+    @Prop({ type: String, required: true }) public readonly email: string;
+    @Prop({ type: String, required: true }) public readonly address: string;
+    @Prop({ type: String, required: true }) public readonly postcode: string;
 
-          // [START createwithemail]
-          let email = this.email,
-            password = this.password
-            // userRegisteredName = this.name
-        
-          firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then((result) => {
-    
-              // const token = result.credential.accessToken
-              // console.log(token)
+    public valid: boolean = true;
+    public name: string,
+    public nameRules: array = [
+      (v) => !!v || 'Name is required!',
+      (v) => (v && v.length <= 10 || 'Name must be less than 10 charactera'),
+    ]
+    public email: string;
+    public emailRules: array = [
+      (v) => !!v || 'Email is required',
+      (v) => /.+@.+\..+/.test(v) || 'Please Enter a valid e-mail'
+    ];
+    public password: string;
+    public passwordRules: array = [
+      (v) => !!v || 'Password is required!',
+      (v) => (v && v.length >= 6 || 'Name must be more than 6 charactera')
+    ];
 
-              const { user } = result
+    public phone: string,
+    public address: string,
+    public postcode: string,
+    public photo: string = 'https://lh5.googleusercontent.com/-U1TFOGH-4DQ/AAAAAAAAAAI/AAAAAAAAAuE/tS4M30mPvU8/photo.jpg',
+    public boo: string;
+    public loading: boolean = false;
 
-              // update displayName
-              user.updateProfile({ displayName: this.name })
+    public register() {
+      // this.loading = true
+      // if (this.$refs.register.validate()) {
 
-              db.collection('profiles').doc(user.uid).set({
-                name: this.name,
-                phone: user.phoneNumber,
-                address: null,
-                id: user.uid,
-                email: user.email,
-                liveStatus: null,
-                photo: this.photo
-              })
+      //   // [START createwithemail]
+      //   let email = this.email,
+      //     password = this.password
+      //     // userRegisteredName = this.name
 
-              this.loading = false
-              this.$router.push('/')
-            })
-            .catch(error => {
-              this.loading = false
-              if (error.code === 'auth/email-already-in-use') {
-                return
-              } else if (error.code === 'auth/weak-password') {
-                this.boo = error.message
-                return
-              }
-              this.boo = error.message
-            })
-            // [END createwithemail]
-          }
-        }
+      //   firebase.auth().createUserWithEmailAndPassword(email, password)
+      //     .then((result) => {
+
+      //       // const token = result.credential.accessToken
+      //       // console.log(token)
+
+      //       const { user } = result
+
+      //       // update displayName
+      //       user.updateProfile({ displayName: this.name })
+
+      //       db.collection('profiles').doc(user.uid).set({
+      //         name: this.name,
+      //         phone: user.phoneNumber,
+      //         address: null,
+      //         id: user.uid,
+      //         email: user.email,
+      //         liveStatus: null,
+      //         photo: this.photo
+      //       })
+
+      //       this.loading = false
+      //       this.$router.push('/')
+      //     })
+      //     .catch(error => {
+      //       this.loading = false
+      //       if (error.code === 'auth/email-already-in-use') {
+      //         return
+      //       } else if (error.code === 'auth/weak-password') {
+      //         this.boo = error.message
+      //         return
+      //       }
+      //       this.boo = error.message
+      //     })
+      //     // [END createwithemail]
+      //   }
     }
   }
 </script>

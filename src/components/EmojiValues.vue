@@ -2,20 +2,23 @@
   <span @click="choose" class="pointer">{{ emoji.value }}</span>
 </template>
 
-<script>
-  export default {
+<script lang="ts">
+  import { Vue, Component, Prop, Emit } from 'vue-property-decorator';
+
+  @Component({
     name: 'emoji-values',
-    props: {
-      emoji: {
-        type: Object,
-        default: null
+  })
+
+  export default class EmojiValues extends Vue {
+    @Prop({ type: Object, required: true }) public readonly emoji!: object;
+
+      public choose() {
+        this.$emit('click', this.emoji);
       }
-    },
-    methods: {
-      choose () {
-        this.$emit('click', this.emoji)
+
+      get clickedEmoji() {
+        return this.emoji;
       }
-    },
   }
 </script>
 

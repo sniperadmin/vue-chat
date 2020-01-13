@@ -55,39 +55,23 @@
     </v-menu>
 </template>
 
-<script>
-import EditForm from "@/components/EditForm";
-  export default {
+<script lang="ts">
+import EditForm from '@/components/EditForm';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
+@Component({
     name: 'profile-menu',
     components: {
-      EditForm
+      EditForm,
     },
-    props: {
-      profileImg: {
-        type: String,
-        default: null
-      },
-      username: {
-        type: String,
-        default: null
-      },
-      useremail: {
-        type: String,
-        default: null
-      },
-      phone: {
-        type: String,
-        default: null
-      },
-      address: {
-        type: String,
-        default: null
-      },
-      postcode: {
-        type: String,
-        default: null
-      }
-    }
+  })
+  export default class ProfileMenu extends Vue {
+    @Prop({ type: String }) public readonly profileImg!: string;
+    @Prop({ type: String }) public readonly username!: string;
+    @Prop({ type: String }) public readonly useremail!: string;
+    @Prop({ type: String }) public readonly phone!: string;
+    @Prop({ type: String }) public readonly address!: string;
+    @Prop({ type: String }) public readonly postcode!: string;
   }
 </script>
 

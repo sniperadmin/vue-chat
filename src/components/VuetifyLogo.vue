@@ -7,16 +7,16 @@
   ></v-img>
 </template>
 
-<script>
-  export default {
-    name: 'vuetify-logo',
-    props: {
-      height: {
-        type: Number,
-        default: 50
-      }
-    }
-  }
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
+@Component({
+    name: 'VuetifyLogo',
+  })
+
+export default class VuetifyLogo extends Vue {
+  @Prop({ type: String, default: '50' }) public readonly height!: string;
+}
 </script>
 
 <style scoped>

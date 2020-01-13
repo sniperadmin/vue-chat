@@ -1,12 +1,13 @@
 <template>
   <v-container
     id="scroll-target"
+    ref="chat"
     sm9
     order-xs1
     style="max-height: 400px"
     class="overflow-y-auto"
-    v-chat-scroll="{ always: false, smooth: true, scrollonremoved: true }"
   >
+    <!-- v-chat-scroll="{ always: false, smooth: true, scrollonremoved: true }" -->
 
       <v-list
         subheader
@@ -55,35 +56,38 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 // import moment from 'moment'
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-  export default {
-    name: 'messages',
-    props: {
-      messages: {
-        type: Array,
-        default: null
-      },
-      authUser: {
-        type: Object,
-        default: null
-      }
-    },
-    data: () => ({
-      // activeMessage: false,
-      lastMessage: null,
-      messageRecieved: false
-    }),
-    methods: {
-      definer() {
-        // this.lastMessage = this.messages[this.messages.length - 1]
-        // console.log(moment(this.lastMessage.createdAt.seconds).format('LTS'))
-      }
+@Component({
+    name: 'Messages',
+  })
+  export default class Messages extends Vue {
+    @Prop({ type: Array, required: true }) public readonly messages!: object;
+    @Prop({ type: Object, required: true }) public readonly authUser!: object;
 
-    },
-    created () {
-      this.definer()
+    // activeMessage: false,
+    public lastMessage: object = {}
+    public messageRecieved: boolean = false
+
+    public definer() {
+      // this.lastMessage = this.messages[this.messages.length - 1]
+      // console.log(moment(this.lastMessage.createdAt.seconds).format('LTS'))
+      console.log('this is hi from messages component!');
+    }
+
+    public scrollToEnd() {
+      this.$nextTick(() => {
+        const container: any = this.$refs.chat
+        container.scrollTop = container.scrollHeight
+        console.log(container.scrollTop, container.scrollHeight)
+      })
+    }
+
+    public created() {
+      this.definer();
+      this.scrollToEnd();
     }
   }
 </script>

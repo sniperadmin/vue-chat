@@ -31,60 +31,62 @@
 </v-container>
 </template>
 
-<script>
+<script lang="ts">
   import firebase from 'firebase'
   import { db } from '../fb'
   import Tabs from '@/components/Tabs'
   import VuetifyLogo from '@/components/VuetifyLogo'
 
-  export default {
+  import Vue from 'vue';
+  import Component from 'vue-class-component';
+
+  @Component({
     name: 'login',
     components: {
       Tabs,
-      VuetifyLogo
+      VuetifyLogo,
     },
-    data: () => ({
-      snackbar: false
-    }),
-    methods: {
-      loginGoogle () {
-        const provider = new firebase.auth.GoogleAuthProvider()
-        // provider.addScope('https://www.googleapis.com/auth/contacts.readonly') // this is to request contacts from user
+  })
+  export default class Login extends Vue {
+    public snackbar: boolean = false
 
-        firebase.auth().signInWithPopup(provider).then((result) => {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          // const token = result.credential.accessToken
-          // console.log(token)
+    public loginGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider()
+      // provider.addScope('https://www.googleapis.com/auth/contacts.readonly') // this is to request contacts from user
 
-          // The signed-in user info.
-          const { user } = result
+      firebase.auth().signInWithPopup(provider).then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        // const token = result.credential.accessToken
+        // console.log(token)
 
-          window.localStorage.setItem('user', JSON.stringify(user))
+        // The signed-in user info.
+        const { user }: any = result
 
-          // Add a new document with a generated id.
-            db.collection('profiles').doc(user.uid).set({
-                name: user.displayName,
-                phone: user.phoneNumber,
-                address: null,
-                postcode: null,
-                id: user.uid,
-                email: user.email,
-                liveStatus: null,
-                photo: user.photoURL
-              })
-              .then(() => {
-                // console.log(`Document written with ID: ${user.uid}`)
-              })
-              .catch(() => {
-                // console.error(`Error adding document: `, error)
-              })
+        window.localStorage.setItem('user', JSON.stringify(user))
 
-          this.$router.push('/')
+        // Add a new document with a generated id.
+        db.collection('profiles').doc(user.uid).set({
+              name: user.displayName,
+              phone: user.phoneNumber,
+              address: null,
+              postcode: null,
+              id: user.uid,
+              email: user.email,
+              liveStatus: null,
+              photo: user.photoURL,
+            })
+            .then(() => {
+              // console.log(`Document written with ID: ${user.uid}`)
+            })
+            .catch(() => {
+              // console.error(`Error adding document: `, error)
+            })
 
-        }).catch(() => {
-          // console.error('error sign in with google', error)
-        })
-      }
+        this.$router.push('/')
+
+      }).catch(() => {
+        // console.error('error sign in with google', error)
+      })
     }
 }
 </script>

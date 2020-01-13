@@ -85,91 +85,79 @@
   </v-row>
 </template>
 
-<script>
-  import { firebase, db } from '../fb'
+<script lang="ts">
+  // import { firebase, db } from '../fb'
+  import { Vue, Component, Prop } from 'vue-property-decorator';
 
-  export default {
-    name: 'edit-form',
-    // im using props here to prove to myself that i can master using them
-    // these props are getting data from => ProfileMenu => Home
-    props: {
-      name: {
-        type: String,
-        default: null
-      },
-      phone: {
-        type: String,
-        default: null
-      },
-      email: {
-        type: String,
-        default: null
-      },
-      address: {
-        type: String,
-        default: null
-      },
-      postcode: {
-        type: String,
-        default: null
+
+  @Component({
+    name: 'EditForm',
+  })
+
+  export default class EditForm extends Vue {
+    @Prop({ type: String }) public name: string;
+    @Prop({ type: String }) public phone: string;
+    @Prop({ type: String }) public email: string;
+    @Prop({ type: String }) public address: string | undefined;
+    @Prop({ type: String }) public postcode: string | undefined;
+
+    public dialog: boolean =  false;
+    public valid: boolean = false;
+    public newName: string;
+    public nameRules: array =  [
+      (v) => !!v || 'Name is required!',
+      (v) => (v && v.length <= 10 || 'Name must be less than 10 charactera')
+    ];
+    public newPhone: string;
+    public phoneRules: array =  [
+      (v) => !!v || 'phone is required!',
+      (v) => (/\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/.test(v)
+        || 'Please Enter a valid number including international code e.g (+20)')
+    ];
+    public newEmail: string;
+    public emailRules: array = [
+      (v) => !!v || 'Email is required',
+      (v) => /.+@.+\..+/.test(v) || 'Please Enter a valid e-mail'
+    ];
+    public newAddress: string;
+    public newPostcode: string;
+
+
+
+    public saveData() {
+        // let user = firebase.auth().currentUser
+        // if (this.$refs.profile.validate()) {
+        //   if (user) {
+        //     let id = user.uid
+        //     console.log(id)
+        //     db.collection('profiles').doc(id).update({
+        //       name: this.newName ? this.newName : this.name,
+        //       phone: this.newPhone ? this.newPhone : this.phone,
+        //       email: this.newEmail ? this.newEmail : this.email,
+        //       address: this.newAddress,
+        //       postcode: this.newPostcode
+        //       // photo: user.photoURL
+        //     }).then(() => {
+        //       console.log(`document id ${user.uid} has been updated`)
+        //       this.dialog = false
+        //     }).catch((err) => {
+        //       console.error(`failed!`,err)
+        //     })
+        //   }
+        // }
       }
-    },
-    data: () => ({
-      dialog: false,
-      valid: false,
-      newName: '',
-      nameRules: [
-        v => !!v || 'Name is required!',
-        v => (v && v.length <= 10 || 'Name must be less than 10 charactera')
-      ],
-      newPhone: '',
-      phoneRules: [
-        v => !!v || 'phone is required!',
-        v => (/\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/.test(v)
-          || 'Please Enter a valid number including international code e.g (+20)')
-      ],
-      newEmail: '',
-      emailRules: [
-        v => !!v || 'Email is required',
-        v => /.+@.+\..+/.test(v) || 'Please Enter a valid e-mail'
-      ],
-      newAddress: null,
-      newPostcode: null
-    }),
-    methods: {
-      saveData () {
-        let user = firebase.auth().currentUser
-        if (this.$refs.profile.validate()) {
-          if (user) {
-            let id = user.uid
-            console.log(id)
-            db.collection('profiles').doc(id).update({
-              name: this.newName ? this.newName : this.name,
-              phone: this.newPhone ? this.newPhone : this.phone,
-              email: this.newEmail ? this.newEmail : this.email,
-              address: this.newAddress,
-              postcode: this.newPostcode
-              // photo: user.photoURL
-            }).then(() => {
-              console.log(`document id ${user.uid} has been updated`)
-              this.dialog = false
-            }).catch((err) => {
-              console.error(`failed!`,err)
-            })
-          }
-        }
-      }
-    },
-    created () {
-      // just confirming that data could be read properly from db
-      let user = firebase.auth().currentUser
-      if(user) {
-        db.collection('profiles').doc(user.uid).onSnapshot(snap => {
-          console.log(snap)
-        })
-      }
+
+      public created() {
+        // // just confirming that data could be read properly from db
+        // let user = firebase.auth().currentUser
+        // if(user) {
+        //   db.collection('profiles').doc(user.uid).onSnapshot(snap => {
+        //     console.log(snap)
+        //   })
+        // }
     }
   }
+
 </script>
 
 <style lang="scss" scoped>

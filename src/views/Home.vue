@@ -26,7 +26,7 @@
         <Guides />
       </v-flex>
       <v-flex xs12>
-        <Notify />
+        <!-- <Notify /> -->
       </v-flex>
       
       <!-- the actual app here -->
@@ -108,30 +108,38 @@
   </v-container>
 </template>
 
-<script>
-  // import firebase from 'firebase'
-  import { firebase, db } from '../fb'
-  import VuetifyLogo from '@/components/VuetifyLogo'
-  import ProfileMenu from '@/components/ProfileMenu'
-  import Hero from '@/components/Hero'
-  import Guides from '@/components/Guides'
-  import Typer from '@/components/Typer'
-  import Users from '@/components/Users'
-  import Messages from '@/components/Messages'
-  import Logout from "@/components/Logout"
-  import Notify from '@/components/PushNotification'
+<script lang="ts">
+  import { firebase, db } from '../fb';
+  import VuetifyLogo from '@/components/VuetifyLogo';
+  import ProfileMenu from '@/components/ProfileMenu';
+  import Hero from '@/components/Hero';
+  import Guides from '@/components/Guides';
+  import Typer from '@/components/Typer';
+  import Users from '@/components/Users';
+  import Messages from '@/components/Messages';
+  import Logout from '@/components/Logout';
+  // import Notify from '@/components/PushNotification';
+  import Vue from 'vue';
+  import Component from 'vue-class-component';
 
 
-  const firestoreDb = firebase.firestore()
-  const oldRealTimeDb = firebase.database()
+  const firestoreDb = firebase.firestore();
+  const oldRealTimeDb = firebase.database();
 
-  const usersRef = firestoreDb.collection('profiles') // Get a firestore reference to the Users collection
-  const onlineRef = oldRealTimeDb.ref('.info/connected') // Get a database reference to the list of connections
+  const usersRef = firestoreDb.collection('profiles'); // Get a firestore reference to the Users collection
+  const onlineRef = oldRealTimeDb.ref('.info/connected'); // Get a database reference to the list of connections
 
-  // @ is an alias to /src
-  export default {
-    name: 'home',
-    components: {
+
+  interface User {
+    uid: string
+    liveStatus: string
+    photoURL: string
+  }
+
+  // The @Component decorator indicates the class is a Vue component
+  @Component({
+  name: 'home',
+  components: {
       VuetifyLogo,
       ProfileMenu,
       Hero,
@@ -140,120 +148,115 @@
       Users,
       Messages,
       Logout,
-      Notify
+      // Notify,
     },
-    data: () => ({
-      messages: [],
-      currentUser: [],
-      users: [],
-      isActive: '',
-      authUser:{},
-      profileImg:'https://lh5.googleusercontent.com/-U1TFOGH-4DQ/AAAAAAAAAAI/AAAAAAAAAuE/tS4M30mPvU8/photo.jpg',
-      loading: false,
-      snackbar: false,
-      notifications: ['logged In!', 'App Online!', 'App Offline'],
-      appOn: false
-    }),
-    methods: {
-      runCashingUser (user) {
-        if (user) {
-          onlineRef.on('value', (snapshot) => {
-            if (snapshot.val() === true) { // if vlaue is true
-              this.appOn = true
-              this.snackbar = true
-  
-              usersRef.doc(user.uid).update({
-                liveStatus: 'online'
-              })
-            } else {
-              this.appOn = false
-            }
-          })
-          // setting active status
-          this.isActive = user.liveStatus
-          // injecting user object
-          this.authUser = user
-          // injecting photo
-          this.profileImg = this.authUser.photoURL
-          // cashing user
-          const allUsers = []
-          allUsers.push(user)
-          this.currentUser = allUsers
-          } else {
-            this.authUser = {}
-          }
-      },
-      logout() {
-        let user = firebase.auth().currentUser
-        firebase.auth().signOut().then(() => {
-          // Sign-out successful.
-          // updating liveStatus in firestore
-          window.localStorage.setItem('user', JSON.stringify({}))
+})
+
+export default class Home extends Vue {
+  public messages: object[] = [];
+  public currentUser: object = {};
+  public users: object[] = [];
+  public isActive: string = '';
+  public profileImg: string = 'https://lh5.googleusercontent.com/-U1TFOGH-4DQ/AAAAAAAAAAI/AAAAAAAAAuE/tS4M30mPvU8/photo.jpg';
+  public authUser: object = {};
+  public loading: boolean = false;
+  public snackbar: boolean = false;
+  public appOn: boolean = false;
+  public notifications: string[] = ['logged In!', 'App Online!', 'App Offline'];
+
+  public runCashingUser(user: User): void {
+    if (user) {
+      onlineRef.on('value', (snapshot: any) => {
+        if (snapshot.val() === true) { // if vlaue is true
+          // console.log(user)
+          this.appOn = true;
+          this.snackbar = true;
           usersRef.doc(user.uid).update({
-              liveStatus: 'offline'
-            })
-        }).catch(() => {
-          // An error happened.
-        })
-      },
-      fetchMsg () {
-        db.collection('chat').orderBy('createdAt').onSnapshot((querySnapShot) => {
-          // create caching
-          const allMsgs = []
-          // cash docs
-          querySnapShot.forEach((doc) => {
-              allMsgs.push(doc.data())
-          })
-          // inject cashed messages into props
-          this.messages = allMsgs
-          window.localStorage.setItem('messages', JSON.stringify(this.messages))
-        })
-      },
-      fetchUsers () {
-        this.loading = true
-         db.collection('profiles').onSnapshot((querySnapShot) => {
-          // create caching
-          const allUsers = []
-          // cash docs
-          querySnapShot.forEach((doc) => {
-              allUsers.push(doc.data())
-          })
-          // inject cashed messages into props
-          this.users = allUsers
-        })
-        this.loading = false
-      }
-    },
-    created () {
-      firebase.auth().onAuthStateChanged(this.runCashingUser)
-      this.fetchMsg()
-      this.fetchUsers()
-
-        // Note: in case if I would capture all users using admin SDK this is the code
-        // but it is much more slower than DB
-
-        // this.loading = true
-        // axios.get('https://us-central1-chat-app-f412a.cloudfunctions.net/listUsers').then(response => {
-        //   this.users = response.data.users
-        //   this.loading = false
-        //   // this.users.forEach((user) => {
-            
-        //   // })
-        // }).catch(err => console.log(err))
-      },
-      beforeRouteEnter(to, from, next) {
-        next(vm => {
-          firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-              // eslint-disable-next-line callback-return
-              next()
-            } else {
-          vm.$router.push('/login')
-            }
-          })
-        })
+            liveStatus: 'online',
+          });
+        } else {
+          this.appOn = false;
+        }
+      });
+      // setting active status
+      this.isActive = user.liveStatus;
+      // injecting user object
+      this.authUser = user;
+      // injecting photo
+      this.profileImg = user.photoURL;
+      // cashing user
+      const allUsers = [];
+      allUsers.push(user);
+      this.currentUser = allUsers;
+      } else {
+        this.authUser = {};
       }
   }
+
+  public fetchMsg() {
+    db.collection('chat').orderBy('createdAt').onSnapshot((querySnapShot: any) => {
+      // create caching
+      const allMsgs: object[] = []
+      // cash docs
+      querySnapShot.forEach((doc: any) => {
+          allMsgs.push(doc.data())
+      })
+      // inject cashed messages into props
+      this.messages = allMsgs
+      window.localStorage.setItem('messages', JSON.stringify(this.messages))
+    })
+  }
+
+  public fetchUsers() {
+    this.loading = true
+    db.collection('profiles').onSnapshot((querySnapShot: any) => {
+      // create caching
+      const allUsers: object[] = []
+      // cash docs
+      querySnapShot.forEach((doc: any) => {
+        allUsers.push(doc.data())
+      })
+      // inject cashed messages into props
+      this.users = allUsers
+      })
+    this.loading = false
+    }
+
+  public logout() {
+    // console.log('logout')
+    const user: any = firebase.auth().currentUser
+    firebase.auth().signOut().then(() => {
+      // Sign-out successful.
+      // updating liveStatus in firestore
+      window.localStorage.setItem('user', JSON.stringify({}))
+      usersRef.doc(user.uid).update({
+          liveStatus: 'offline',
+        })
+    }).catch(() => {
+      // An error happened.
+    })
+  }
+
+  public beforeRouteEnter(to: any, from: any, next: any) {
+      next((vm: any) => {
+        firebase.auth().onAuthStateChanged((user: any) => {
+          if (user) {
+            // eslint-disable-next-line callback-return
+            next()
+          } else {
+            vm.$router.push('/login')
+          }
+        })
+      })
+    }
+
+  public created() {
+    // firebase.auth().onAuthStateChanged(this.runCashingUser)
+    this.fetchMsg()
+    this.fetchUsers()
+  }
+
+}
 </script>
 
 <style lang="css" scoped>

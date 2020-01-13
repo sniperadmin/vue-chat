@@ -18,54 +18,56 @@
   </v-flex>
 </template>
 
-<script>
+<script lang="ts">
   import { db } from '../fb'
-  import Emoticons from '@/components/Emotions'
+  import Emoticons from './Emotions';
+  import { Vue, Component, Prop } from 'vue-property-decorator';
 
   // import moment from 'moment'
 
-  export default {
-    name: 'typer',
-    props: {
-      authUser: {
-        type: Object,
-        default: null
-      }
-    },
+  interface AuthUser {
+    message: string
+    displayName: string
+    email: string
+    createdAt: string
+  }
+
+  @Component({
+    name: 'Typer',
     components: {
       Emoticons,
     },
-    data: () => ({
-      message: '',
-      editorOption: {
-        // ...
-      }
-    }),
-    methods: {
-      addit (emoji) {
-        // console.log(emoji.value)
-        this.message += emoji.value
-      },
-      saveMsg () {
-        // save to fs
-        // console.log(this.authUser)
-        if (this.message) {
-          db.collection('chat').add({
-            message: this.message,
-            author: this.authUser.displayName,
-            email: this.authUser.email,
-            createdAt: new Date()
+  })
+  export default class Typer extends Vue {
+    @Prop({ type: Object }) public authUser!: AuthUser;
+
+    public message: string = ''
+
+    public addit(emoji: any): any {
+      this.message += emoji.value
+    }
+
+    public saveMsg() {
+      // save to fs
+      console.log(this.message)
+
+      if (this.message) {
+        db.collection('chat').add({
+          message: this.message,
+          author: this.authUser.displayName,
+          email: this.authUser.email,
+          createdAt: new Date(),
+        })
+        .then((ref: any) => {
+          // console.log(ref)
+          db.collection('chat').doc(ref.id).update({
+            id: ref.id,
           })
-          .then((ref) => {
-            db.collection('chat').doc(ref.id).update({
-              id: ref.id
-            })
-            this.$emit('sent')
-          })
-          this.message = ''
-        }
+          this.$emit('sent')
+        })
+        this.message = ''
       }
-    },
+    }
   }
 </script>
 

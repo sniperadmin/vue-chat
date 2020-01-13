@@ -44,36 +44,35 @@
   </div>
 </template>
 
-<script>
-  import EmojiValues from '@/components/EmojiValues.vue';
-  import axios from 'axios'
+<script lang="ts">
+  import EmojiValues from './EmojiValues.vue';
+  import axios from 'axios';
+  import { Vue, Component, Prop, Emit } from 'vue-property-decorator';
 
-  export default {
+  @Component({
+    name: 'Emoticons',
     components: {
-      EmojiValues
+      EmojiValues,
     },
-    props: {
-      emoji: {
-        type: String,
-        default: null
+  })
+  export default class Emoticons extends Vue {
+    // @Prop({  type: String, required: true }) public readonly emoji!: string;
+
+    public menu: boolean = false;
+    public emojis: object[] = [];
+
+      public choose(emoji: object) {
+        this.$emit('click', emoji);
       }
-    },
-    data: () => ({
-      menu: false, // turning on/off the emotions menu
-      emojis: []
-    }),
-    methods: {
-      choose (emoji) {
-        this.$emit('click', emoji)
-        // console.log(emoji)
-      }
-    },
-    created () {
+
+    public created() {
       axios.get('https://raw.githubusercontent.com/shanraisshan/EmojiCodeSheet/master/json/string/People.json')
         .then((res) => {
-          this.emojis = res.data.peoples.people
+          this.emojis = res.data.peoples.people;
         })
-        .catch(() => {})
+        .catch((err) => {
+          console.dir(err);
+        });
     }
   }
 </script>

@@ -52,51 +52,57 @@
   </v-card>
 </template>
 
-<script>
-  import { firebase } from '../fb'
+<script lang="ts">
+  // import { firebase } from '../fb'
+  import { Vue, Component, Prop } from 'vue-property-decorator';
 
-  export default {
-    name: 'login-form',
-    data: () => ({
-      valid: true,
-      email: null,
-      emailRules: [
-        v => !!v || 'Email is required',
-        v => /.+@.+\..+/.test(v) || 'Please Enter a valid e-mail'
-      ],
-      password: null,
-      passwordRules: [
-        v => !!v || 'Password is required!',
-        v => (v && v.length >= 6 || 'Name must be more than 6 charactera')
+  @Component({
+    name: 'LoginForm',
+  })
 
-      ],
-      boo: null,
-      loading: false
-      // reminder for me to add validations
-    }),
-    methods: {
-      login () {
-        this.loading = true
-        let email = this.email,
-          password = this.password;
-        
-        if (this.$refs.login.validate()) {
-          
-          firebase.auth().signInWithEmailAndPassword(email, password)
-          .then((result) => {
-            
-            const { user } = result
-            window.localStorage.setItem('user', JSON.stringify(user))
-            this.loading = false
-            this.$router.push('/');
+  export default class LoginForm extends Vue {
+    @Prop({ type: String, required: true }) public readonly name: string;
+    @Prop({ type: String, required: true }) public readonly phone: string;
+    @Prop({ type: String, required: true }) public readonly email: string;
+    @Prop({ type: String, required: true }) public readonly address: string;
+    @Prop({ type: String, required: true }) public readonly postcode: string;
 
-          })
-          .catch((err) => {
-            this.loading = false
-            this.boo = err.message
-          })
-        }
-      }
+    public valid: boolean = true;
+    public email: string;
+    public emailRules: array = [
+      (v) => !!v || 'Email is required',
+      (v) => /.+@.+\..+/.test(v) || 'Please Enter a valid e-mail'
+    ];
+    public password: string;
+    public passwordRules: array = [
+      (v) => !!v || 'Password is required!',
+      (v) => (v && v.length >= 6 || 'Name must be more than 6 charactera')
+    ];
+    public boo: string;
+    public loading: boolean = false;
+
+
+    public login() {
+      // this.loading = true
+      // let email = this.email,
+      //   password = this.password;
+
+      // if (this.$refs.login.validate()) {
+
+      //   firebase.auth().signInWithEmailAndPassword(email, password)
+      //   .then((result) => {
+
+      //     const { user } = result
+      //     window.localStorage.setItem('user', JSON.stringify(user))
+      //     this.loading = false
+      //     this.$router.push('/');
+
+      //   })
+      //   .catch((err) => {
+      //     this.loading = false
+      //     this.boo = err.message
+      //   })
+      // }
     }
   }
 </script>
