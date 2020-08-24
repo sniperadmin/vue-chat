@@ -6,6 +6,7 @@
       placeholder="Type here..."
       v-on:keyup.enter="saveMsg"
       v-model="message"
+      light
     >
 
     <!-- emotions panel -->
@@ -81,7 +82,6 @@
     /* height: 4.9rem; */
     padding: 10px;
     width: 100%;
-    color: aliceblue;
   }
   .typer input {
     border: 1px solid grey;
@@ -89,5 +89,6 @@
     height: 100%;
     padding: 20px;
     width:100%;
+    color: #ffffff;
   }
 </style>
