@@ -66,9 +66,9 @@
       RegisterForm
     },
     data () {
-      return {
-        tab: null
-      }
+        return {
+            tab: null
+        }
     }
   }
 </script>

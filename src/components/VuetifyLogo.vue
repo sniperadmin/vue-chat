@@ -10,6 +10,9 @@
 <script>
   export default {
     name: 'vuetify-logo',
+    data() {
+      return {}
+    },
     props: {
       height: {
         type: Number,
