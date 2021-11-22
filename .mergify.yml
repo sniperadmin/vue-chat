@@ -1,0 +1,39 @@
+pull_request_rules:
+  - name: automatic merge for Dependabot pull requests
+    conditions:
+      - author~=^dependabot(|-preview)\[bot\]$
+      - check-success=GitGuardian Security Checks
+      - check-success=CodeFactor
+    actions:
+      merge:
+        method: squash
+
+  - name: automatic merge for Snyk pull requests
+    conditions:
+      - title~=^\[Snyk\]
+      - head~=^snyk-fix
+      - check-success~=^security/snyk
+    actions:
+      merge:
+        method: squash
+
+
+  - name: add label on conflict
+    conditions:
+      - conflict
+      - -closed
+    actions:
+      label:
+        add:
+          - conflict
+      comment:
+        message: Could you please fix the conflicts @{{author}}?
+
+  - name: remove label on conflict
+    conditions:
+      - -conflict
+      - -closed
+    actions:
+      label:
+        remove:
+          - conflict
